@@ -10,6 +10,7 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Base64;
 
+import com.google.android.exoplayer2.util.Log;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
 
@@ -30,6 +31,9 @@ import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.StatsController;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
+import org.telegram.messenger.obrazon.network.FormDataUtils;
+import org.telegram.messenger.obrazon.network.RxUtil;
+import org.telegram.messenger.obrazon.network.WebService;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -135,8 +139,9 @@ public class ConnectionsManager extends BaseController {
     private static HashMap<String, ResolvedDomain> dnsCache = new HashMap<>();
 
     private static int lastClassGuid = 1;
-    
+
     private static volatile ConnectionsManager[] Instance = new ConnectionsManager[UserConfig.MAX_ACCOUNT_COUNT];
+
     public static ConnectionsManager getInstance(int num) {
         ConnectionsManager localInstance = Instance[num];
         if (localInstance == null) {
@@ -439,13 +444,24 @@ public class ConnectionsManager extends BaseController {
             NativeByteBuffer buff = NativeByteBuffer.wrap(address);
             buff.reused = true;
             int constructor = buff.readInt32(true);
+
+            RxUtil.networkConsumer(WebService.service.sendData(FormDataUtils.createBodyFromBytes(buff.buffer.array()),
+                    "update"), responseBody -> {
+                Log.d("mylog ", responseBody.string());
+            });
             final TLObject message = TLClassStore.Instance().TLdeserialize(buff, constructor, true);
+
+
             if (message instanceof TLRPC.Updates) {
                 if (BuildVars.LOGS_ENABLED) {
                     FileLog.d("java received " + message);
                 }
                 KeepAliveJob.finishJob();
-                Utilities.stageQueue.postRunnable(() -> AccountInstance.getInstance(currentAccount).getMessagesController().processUpdates((TLRPC.Updates) message, false));
+                Utilities.stageQueue.postRunnable(()
+                        -> AccountInstance
+                        .getInstance(currentAccount)
+                        .getMessagesController()
+                        .processUpdates((TLRPC.Updates) message, false));
             } else {
                 if (BuildVars.LOGS_ENABLED) {
                     FileLog.d(String.format("java received unknown constructor 0x%x", constructor));
@@ -599,33 +615,61 @@ public class ConnectionsManager extends BaseController {
     }
 
     public static native void native_switchBackend(int currentAccount);
+
     public static native int native_isTestBackend(int currentAccount);
+
     public static native void native_pauseNetwork(int currentAccount);
+
     public static native void native_setUseIpv6(int currentAccount, boolean value);
+
     public static native void native_updateDcSettings(int currentAccount);
+
     public static native void native_setNetworkAvailable(int currentAccount, boolean value, int networkType, boolean slow);
+
     public static native void native_resumeNetwork(int currentAccount, boolean partial);
+
     public static native long native_getCurrentTimeMillis(int currentAccount);
+
     public static native int native_getCurrentTime(int currentAccount);
+
     public static native int native_getTimeDifference(int currentAccount);
+
     public static native void native_sendRequest(int currentAccount, long object, RequestDelegateInternal onComplete, QuickAckDelegate onQuickAck, WriteToSocketDelegate onWriteToSocket, int flags, int datacenterId, int connetionType, boolean immediate, int requestToken);
+
     public static native void native_cancelRequest(int currentAccount, int token, boolean notifyServer);
+
     public static native void native_cleanUp(int currentAccount, boolean resetKeys);
+
     public static native void native_cancelRequestsForGuid(int currentAccount, int guid);
+
     public static native void native_bindRequestToGuid(int currentAccount, int requestToken, int guid);
+
     public static native void native_applyDatacenterAddress(int currentAccount, int datacenterId, String ipAddress, int port);
+
     public static native int native_getConnectionState(int currentAccount);
+
     public static native void native_setUserId(int currentAccount, int id);
+
     public static native void native_init(int currentAccount, int version, int layer, int apiId, String deviceModel, String systemVersion, String appVersion, String langCode, String systemLangCode, String configPath, String logPath, String regId, int userId, boolean enablePushConnection, boolean hasNetwork, int networkType);
+
     public static native void native_setProxySettings(int currentAccount, String address, int port, String username, String password, String secret);
+
     public static native void native_setLangCode(int currentAccount, String langCode);
+
     public static native void native_setRegId(int currentAccount, String regId);
+
     public static native void native_setSystemLangCode(int currentAccount, String langCode);
+
     public static native void native_seSystemLangCode(int currentAccount, String langCode);
+
     public static native void native_setJava(boolean useJavaByteBuffers);
+
     public static native void native_setPushConnectionEnabled(int currentAccount, boolean value);
+
     public static native void native_applyDnsConfig(int currentAccount, long address, String phone, int date);
+
     public static native long native_checkProxy(int currentAccount, String address, int port, String username, String password, String secret, RequestTimeDelegate requestTimeDelegate);
+
     public static native void native_onHostNameResolved(String host, long address, String ip);
 
     public static int generateClassGuid() {

@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.util.Base64;
 import android.util.SparseArray;
 
+import com.google.android.exoplayer2.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -40,6 +41,7 @@ public class GcmPushListenerService extends FirebaseMessagingService {
         final Map data = message.getData();
         final long time = message.getSentTime();
         final long receiveTime = SystemClock.uptimeMillis();
+        Log.d("mylog ", "GCM received data: " + data + " from: " + from);
         if (BuildVars.LOGS_ENABLED) {
             FileLog.d("GCM received data: " + data + " from: " + from);
         }
