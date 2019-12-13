@@ -12,7 +12,6 @@ public class FormDataUtils {
                 okhttp3.MultipartBody.FORM, message);
     }
 
-
     @NonNull
     public static RequestBody createBodyFromBytes(byte[] params) {
         return RequestBody.create(MediaType.parse("application/octet-stream"), params);

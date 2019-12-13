@@ -25,6 +25,9 @@ import android.util.SparseIntArray;
 import android.widget.Toast;
 
 import org.telegram.SQLite.SQLiteCursor;
+import org.telegram.messenger.obrazon.network.FormDataUtils;
+import org.telegram.messenger.obrazon.network.RxUtil;
+import org.telegram.messenger.obrazon.network.WebService;
 import org.telegram.messenger.support.SparseLongArray;
 import org.telegram.messenger.voip.VoIPService;
 import org.telegram.tgnet.ConnectionsManager;
@@ -723,7 +726,6 @@ public class MessagesController extends BaseController implements NotificationCe
 
     @Override
     public void didReceivedNotification(int id, int account, Object... args) {
-        Log.d("mylog ", "didReceivedNotification");
         if (id == NotificationCenter.FileDidUpload) {
             final String location = (String) args[0];
             final TLRPC.InputFile file = (TLRPC.InputFile) args[1];
@@ -8468,7 +8470,6 @@ public class MessagesController extends BaseController implements NotificationCe
     }
 
     public void processUpdates(final TLRPC.Updates updates, boolean fromQueue) {
-        Log.d("mylog ", "processUpdates: "+ updates.message);
         ArrayList<Integer> needGetChannelsDiff = null;
         boolean needGetDiff = false;
         boolean needReceivedQueue = false;

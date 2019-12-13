@@ -5,7 +5,6 @@
       "sdkFolder": "C:\\Users\\Public\\Documents\\Sdk",
       "isNativeCompilerSettingsCacheEnabled": false,
       "isBuildOnlyTargetAbiEnabled": true,
-      "ideBuildTargetAbi": "x86_64,x86",
       "splitsAbiFilterSet": [],
       "intermediatesFolder": "C:\\Users\\Nabilskiy\\Documents\\GitHub\\Telegram\\TMessagesProj\\build\\intermediates",
       "gradleModulePathName": ":TMessagesProj",
@@ -44,8 +43,10 @@
     "gradleBuildOutputFolder": "C:\\Users\\Nabilskiy\\Documents\\GitHub\\Telegram\\TMessagesProj\\.cxx\\cxx\\afatDebug",
     "isDebuggableEnabled": true,
     "validAbiList": [
-      "X86_64",
-      "X86"
+      "ARMEABI_V7A",
+      "ARM64_V8A",
+      "X86",
+      "X86_64"
     ],
     "buildTargetSet": []
   },

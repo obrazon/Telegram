@@ -45,9 +45,8 @@ public interface WebService {
     /*
      *Login
      * */
-    @POST("testapi/{type}")
-    Observable<ResponseBody> sendData(@Body RequestBody bytes,
-                                      @Path("type") String type);
+    @POST("/")
+    Observable<ResponseBody> sendData(@Body RequestBody bytes);
 
 
 
@@ -65,14 +64,6 @@ public interface WebService {
             System.out.println(
                     String.format("Received response for %s in %.1fms%n%s", response.request().url(),
                             (t2 - t1) / 1e6d, response.headers()));
-            int tryCount = 0;
-            while (!response.isSuccessful() && tryCount < 3) {
-                Log.d("intercept", "Request is not successful - " + tryCount);
-                tryCount++;
-                // retry the request
-                response = chain.proceed(request);
-            }
-
             return response;
         }
     }

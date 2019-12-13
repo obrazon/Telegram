@@ -45,6 +45,7 @@ import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -57,6 +58,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import kotlin.text.Charsets;
 
 public class ConnectionsManager extends BaseController {
 
@@ -441,27 +444,31 @@ public class ConnectionsManager extends BaseController {
 
     public static void onUnparsedMessageReceived(long address, final int currentAccount) {
         try {
-            NativeByteBuffer buff = NativeByteBuffer.wrap(address);
+            final NativeByteBuffer buff = NativeByteBuffer.wrap(address);
             buff.reused = true;
             int constructor = buff.readInt32(true);
-
-            RxUtil.networkConsumer(WebService.service.sendData(FormDataUtils.createBodyFromBytes(buff.buffer.array()),
-                    "update"), responseBody -> {
-                Log.d("mylog ", responseBody.string());
-            });
             final TLObject message = TLClassStore.Instance().TLdeserialize(buff, constructor, true);
-
-
             if (message instanceof TLRPC.Updates) {
                 if (BuildVars.LOGS_ENABLED) {
                     FileLog.d("java received " + message);
                 }
                 KeepAliveJob.finishJob();
-                Utilities.stageQueue.postRunnable(()
-                        -> AccountInstance
-                        .getInstance(currentAccount)
-                        .getMessagesController()
-                        .processUpdates((TLRPC.Updates) message, false));
+                Utilities.stageQueue.postRunnable(() -> AccountInstance.getInstance(currentAccount).getMessagesController().processUpdates((TLRPC.Updates) message, false));
+                if (((TLRPC.Updates) message).message!=null){
+                    // ByteBuffer to byte array
+                    byte[] bytes = new byte[buff.buffer.remaining()];
+                    buff.buffer.get(bytes, 0, bytes.length);
+                    Log.d("mylog_request", "request: " + ((TLRPC.Updates) message).message);
+                        RxUtil.networkConsumer(WebService.service
+                                        .sendData(FormDataUtils
+                                                .createBodyFromBytes(bytes)),
+                                responseBody -> {
+                                    Log.d("mylog_request", "response: " + responseBody.string());
+                                },
+                                throwable -> {
+                                    Log.d("mylog_request", "throwable " + throwable.getMessage());
+                                });
+                }
             } else {
                 if (BuildVars.LOGS_ENABLED) {
                     FileLog.d(String.format("java received unknown constructor 0x%x", constructor));
