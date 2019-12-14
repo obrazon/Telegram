@@ -24,7 +24,8 @@ import retrofit2.http.Path;
 public interface WebService {
 
     OkHttpClient client = HttpsUtil.getUnsafeOkHttpClient(new MyInterceptor());
-    Retrofit retrofit = new Retrofit.Builder().baseUrl(BuildVars.OZN_API).client(client)
+    Retrofit retrofit = new Retrofit.Builder()
+            .baseUrl(BuildVars.OZN_API).client(client)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create()).build();
     WebService service = retrofit.create(WebService.class);
