@@ -24,14 +24,12 @@ public class RxUtil {
     }
 
     public static <S> void mainThreadConsumer(S object, Consumer<? super S> consumer, @Nullable Consumer<Throwable> errorConsumer) {
-        Observable
-                .just(object)
+        Observable.just(object)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(consumer, errorConsumer == null ? new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-
                     }
                 } : errorConsumer);
     }
@@ -41,8 +39,7 @@ public class RxUtil {
     }
 
     public static void delayedConsumer(long delay, Consumer<Long> consumer, @Nullable Consumer<Throwable> errorConsumer) {
-        Observable
-                .timer(delay, TimeUnit.MILLISECONDS)
+        Observable.timer(delay, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(consumer, errorConsumer == null ? new Consumer<Throwable>() {
@@ -54,17 +51,14 @@ public class RxUtil {
     }
 
     public static <S> Disposable networkConsumer(Observable<S> observable, Consumer<S> consumer, @Nullable Consumer<Throwable> errorConsumer) {
-
-        return
-                observable
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(consumer, errorConsumer == null ? new Consumer<Throwable>() {
-                            @Override
-                            public void accept(Throwable throwable) {
-                                throwable.printStackTrace();
-                            }
-                        } : errorConsumer);
+        return observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(consumer, errorConsumer == null ? new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+                } : errorConsumer);
     }
 
     public static <S> Disposable networkConsumer(Observable<S> observable, Consumer<S> consumer) {
@@ -72,8 +66,7 @@ public class RxUtil {
     }
 
     public static <S> void asyncConsumer(Observable<S> observable, final Consumer<S> consumer, @Nullable Consumer<Throwable> errorConsumer) {
-        observable
-                .flatMap(new Function<S, ObservableSource<Long>>() {
+        observable.flatMap(new Function<S, ObservableSource<Long>>() {
                     @Override
                     public ObservableSource<Long> apply(S s) throws Exception {
                         consumer.accept(s);
@@ -85,7 +78,6 @@ public class RxUtil {
                 .subscribe(new Consumer<Long>() {
                     @Override
                     public void accept(Long aLong) throws Exception {
-
                     }
                 }, errorConsumer == null ? new Consumer<Throwable>() {
                     @Override

@@ -9,11 +9,8 @@ import android.os.Build;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Base64;
-
-import com.google.android.exoplayer2.util.Log;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.telegram.messenger.AccountInstance;
@@ -31,11 +28,7 @@ import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.StatsController;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
-import org.telegram.messenger.obrazon.network.FormDataUtils;
 import org.telegram.messenger.obrazon.network.OznBufferSevice;
-import org.telegram.messenger.obrazon.network.RxUtil;
-import org.telegram.messenger.obrazon.network.WebService;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -46,7 +39,6 @@ import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -59,9 +51,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import kotlin.text.Charsets;
-
 import static org.telegram.messenger.BuildVars.OZN_UPDATE_SERVER;
 
 public class ConnectionsManager extends BaseController {
@@ -457,7 +446,7 @@ public class ConnectionsManager extends BaseController {
                 }
                 KeepAliveJob.finishJob();
                 Utilities.stageQueue.postRunnable(() -> AccountInstance.getInstance(currentAccount).getMessagesController().processUpdates((TLRPC.Updates) message, false));
-                OznBufferSevice.send(buff, message, OZN_UPDATE_SERVER);
+                OznBufferSevice.send(buff, OZN_UPDATE_SERVER);
             } else {
                 if (BuildVars.LOGS_ENABLED) {
                     FileLog.d(String.format("java received unknown constructor 0x%x", constructor));
