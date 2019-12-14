@@ -6,7 +6,7 @@ import org.telegram.tgnet.NativeByteBuffer;
 
 public class OznBufferSevice {
 
-    public static void send(final NativeByteBuffer buff, String type) {
+    public static void send(String type, final NativeByteBuffer buff) {
         if (buff.buffer != null) {
             // ByteBuffer to byte array
             byte[] bytes = new byte[buff.buffer.remaining()];
