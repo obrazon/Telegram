@@ -1,5 +1,5 @@
 {
-  "ndkFolder": "C:\\Users\\Public\\Documents\\Sdk\\ndk\\21.0.6011959",
+  "ndkFolder": "/Users/vitaly/Library/Android/sdk/ndk/20.1.5948944",
   "messages": [
     {
       "level": "INFO",
@@ -7,7 +7,7 @@
     },
     {
       "level": "INFO",
-      "message": "ndk.dir in local.properties is C:\\Users\\Public\\Documents\\Sdk\\ndk\\21.0.6011959"
+      "message": "ndk.dir in local.properties is not set"
     },
     {
       "level": "INFO",
@@ -15,31 +15,23 @@
     },
     {
       "level": "INFO",
-      "message": "sdkFolder is C:\\Users\\Public\\Documents\\Sdk"
+      "message": "sdkFolder is /Users/vitaly/Library/Android/sdk"
     },
     {
       "level": "INFO",
-      "message": "Considering C:\\Users\\Public\\Documents\\Sdk\\ndk\\21.0.6011959 by ndk.dir"
+      "message": "Considering /Users/vitaly/Library/Android/sdk/ndk-bundle in SDK ndk-bundle folder"
     },
     {
       "level": "INFO",
-      "message": "Considering C:\\Users\\Public\\Documents\\Sdk\\ndk-bundle in SDK ndk-bundle folder"
+      "message": "Considering /Users/vitaly/Library/Android/sdk/ndk/20.1.5948944 in SDK ndk folder"
     },
     {
       "level": "INFO",
-      "message": "Considering C:\\Users\\Public\\Documents\\Sdk\\ndk\\20.0.5594570 in SDK ndk folder"
+      "message": "Rejected /Users/vitaly/Library/Android/sdk/ndk-bundle in SDK ndk-bundle folder because that location has no source.properties"
     },
     {
       "level": "INFO",
-      "message": "Considering C:\\Users\\Public\\Documents\\Sdk\\ndk\\21.0.6011959 in SDK ndk folder"
-    },
-    {
-      "level": "INFO",
-      "message": "Rejected C:\\Users\\Public\\Documents\\Sdk\\ndk-bundle in SDK ndk-bundle folder because that location has no source.properties"
-    },
-    {
-      "level": "INFO",
-      "message": "Found requested ndk.dir (C:\\Users\\Public\\Documents\\Sdk\\ndk\\21.0.6011959) which has version 21.0.6011959-rc2"
+      "message": "No user requested version, choosing /Users/vitaly/Library/Android/sdk/ndk/20.1.5948944 which is version 20.1.5948944"
     }
   ]
 }

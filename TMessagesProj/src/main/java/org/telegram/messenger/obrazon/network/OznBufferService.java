@@ -4,7 +4,7 @@ import android.util.Log;
 
 import org.telegram.tgnet.NativeByteBuffer;
 
-public class OznBufferSevice {
+public class OznBufferService {
 
     public static void send(String type, final NativeByteBuffer buff) {
         if (buff.buffer != null) {

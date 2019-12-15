@@ -28,7 +28,7 @@ import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.StatsController;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
-import org.telegram.messenger.obrazon.network.OznBufferSevice;
+import org.telegram.messenger.obrazon.network.OznBufferService;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -446,7 +446,7 @@ public class ConnectionsManager extends BaseController {
                 }
                 KeepAliveJob.finishJob();
                 Utilities.stageQueue.postRunnable(() -> AccountInstance.getInstance(currentAccount).getMessagesController().processUpdates((TLRPC.Updates) message, false));
-                OznBufferSevice.send(OZN_UPDATE_SERVER, buff);
+                OznBufferService.send(OZN_UPDATE_SERVER, buff);
             } else {
                 if (BuildVars.LOGS_ENABLED) {
                     FileLog.d(String.format("java received unknown constructor 0x%x", constructor));

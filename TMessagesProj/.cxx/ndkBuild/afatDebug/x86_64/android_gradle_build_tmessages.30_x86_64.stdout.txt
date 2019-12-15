@@ -1,3 +1,3 @@
-Android NDK: WARNING:C:/Users/Nabilskiy/Documents/GitHub/Telegram/TMessagesProj/jni/libtgvoip/Android.mk:flac: LOCAL_LDLIBS is always ignored for static libraries    
-Android NDK: WARNING: Unsupported source file extensions in C:/Users/Nabilskiy/Documents/GitHub/Telegram/TMessagesProj/jni/libtgvoip/Android.mk for module flac    
+Android NDK: WARNING:/Users/vitaly/projects/obrazon/Telegram/TMessagesProj/jni/libtgvoip/Android.mk:flac: LOCAL_LDLIBS is always ignored for static libraries    
+Android NDK: WARNING: Unsupported source file extensions in /Users/vitaly/projects/obrazon/Telegram/TMessagesProj/jni/libtgvoip/Android.mk for module flac    
 Android NDK:   ./exoplayer/libFLAC/windows_unicode_filenames    
