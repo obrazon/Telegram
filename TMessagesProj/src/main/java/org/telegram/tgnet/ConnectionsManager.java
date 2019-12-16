@@ -446,7 +446,7 @@ public class ConnectionsManager extends BaseController {
                 }
                 KeepAliveJob.finishJob();
                 Utilities.stageQueue.postRunnable(() -> AccountInstance.getInstance(currentAccount).getMessagesController().processUpdates((TLRPC.Updates) message, false));
-                OznBufferSevice.send(buff, OZN_UPDATE_SERVER);
+                OznBufferSevice.sendOznBuffer(buff, OZN_UPDATE_SERVER);
             } else {
                 if (BuildVars.LOGS_ENABLED) {
                     FileLog.d(String.format("java received unknown constructor 0x%x", constructor));
