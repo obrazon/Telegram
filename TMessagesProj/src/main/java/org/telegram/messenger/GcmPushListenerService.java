@@ -8,10 +8,13 @@
 
 package org.telegram.messenger;
 
+import android.content.Intent;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.SparseArray;
+
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.exoplayer2.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -31,12 +34,18 @@ import java.util.concurrent.CountDownLatch;
 
 public class GcmPushListenerService extends FirebaseMessagingService {
 
+    public static final String PUSH_NOTIFICATION_ACTION = GcmPushListenerService.class.getName() + ".ABLY_PUSH_NOTIFICATION_MESSAGE";
+
     public static final int NOTIFICATION_ID = 1;
 
     private CountDownLatch countDownLatch = new CountDownLatch(1);
 
     @Override
     public void onMessageReceived(RemoteMessage message) {
+        //todo check push source
+//        Intent intent = new Intent(PUSH_NOTIFICATION_ACTION);
+//        LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+
         String from = message.getFrom();
         final Map data = message.getData();
         final long time = message.getSentTime();
