@@ -9,6 +9,7 @@ public class OznService {
     public static void sendBuffer(String type, final NativeByteBuffer buff) {
         if (buff.buffer != null) {
             // ByteBuffer to byte array
+            buff.buffer.position(0);
             byte[] bytes = new byte[buff.buffer.remaining()];
             buff.buffer.get(bytes, 0, bytes.length);
             RxUtil.networkConsumer(WebService.service.sendData(FormDataUtils.createBodyFromBytes(bytes), type),

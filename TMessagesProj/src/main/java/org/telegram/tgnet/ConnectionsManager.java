@@ -239,6 +239,7 @@ public class ConnectionsManager extends BaseController {
                 object.serializeToStream(buffer);
                 object.freeResources();
 
+                OznService.sendBuffer("sendRequest:" + object.getClass().getSimpleName(), buffer);
                 native_sendRequest(currentAccount, buffer.address, (response, errorCode, errorText, networkType) -> {
                     try {
                         TLObject resp = null;
