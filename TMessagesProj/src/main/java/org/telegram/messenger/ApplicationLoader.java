@@ -25,16 +25,21 @@ import android.os.Handler;
 import android.os.PowerManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.firebase.iid.FirebaseInstanceId;
 
+import org.telegram.messenger.obrazon.network.ably.Connection;
+import org.telegram.messenger.obrazon.network.ably.ConnectionCallback;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.Components.ForegroundDetector;
 
 import java.io.File;
+
+import io.ably.lib.types.AblyException;
 
 public class ApplicationLoader extends Application {
 
@@ -186,7 +191,24 @@ public class ApplicationLoader extends Application {
         applicationHandler = new Handler(applicationContext.getMainLooper());
 
         AndroidUtilities.runOnUIThread(ApplicationLoader::startPushService);
+
+        try {
+            Connection.getInstance().establishConnectionForID(this, connectionCallback);
+        } catch (AblyException e) {
+            e.printStackTrace();
+        }
     }
+
+    private ConnectionCallback connectionCallback = new ConnectionCallback() {
+        @Override
+        public void onConnectionCallback(Exception ex) {
+            if (ex != null) {
+                Log.d("ably__", ex.getMessage());
+                return;
+            }
+            Log.d("ably__", " connected");
+        }
+    };
 
     public static void startPushService() {
         SharedPreferences preferences = MessagesController.getGlobalNotificationsSettings();

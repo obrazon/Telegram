@@ -28,7 +28,7 @@ import org.telegram.messenger.SharedConfig;
 import org.telegram.messenger.StatsController;
 import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.Utilities;
-import org.telegram.messenger.obrazon.network.OznService;
+import org.telegram.messenger.obrazon.network.OznBufferSevice;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
@@ -52,6 +52,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import static org.telegram.messenger.BuildVars.OZN_UPDATE_SERVER;
+import java.util.UUID;
 
 public class ConnectionsManager extends BaseController {
 
@@ -239,7 +240,9 @@ public class ConnectionsManager extends BaseController {
                 object.serializeToStream(buffer);
                 object.freeResources();
 
-                OznService.sendBuffer("sendRequest:" + object.getClass().getSimpleName(), buffer);
+                String uniqueID = UUID.randomUUID().toString();
+                String className = object.getClass().getSimpleName();
+                OznBufferSevice.sendOznBuffer(buffer,"sendRequest:" + className + ":input:" + uniqueID);
                 native_sendRequest(currentAccount, buffer.address, (response, errorCode, errorText, networkType) -> {
                     try {
                         TLObject resp = null;
@@ -248,6 +251,7 @@ public class ConnectionsManager extends BaseController {
                             NativeByteBuffer buff = NativeByteBuffer.wrap(response);
                             buff.reused = true;
                             resp = object.deserializeResponse(buff, buff.readInt32(true), true);
+                            OznBufferSevice.sendOznBuffer(buff,"sendRequest:" + className + ":output:" + uniqueID);
                         } else if (errorText != null) {
                             error = new TLRPC.TL_error();
                             error.code = errorCode;
@@ -255,7 +259,10 @@ public class ConnectionsManager extends BaseController {
                             if (BuildVars.LOGS_ENABLED) {
                                 FileLog.e(object + " got error " + error.code + " " + error.text);
                             }
+                        } else {
+                            OznBufferSevice.sendOznBuffer(null,"sendRequest:" + className + ":noResponse:" + uniqueID);
                         }
+
                         if (resp != null) {
                             resp.networkType = networkType;
                         }
@@ -271,6 +278,7 @@ public class ConnectionsManager extends BaseController {
                             }
                         });
                     } catch (Exception e) {
+                        OznBufferSevice.sendOznBuffer(null,"sendRequest:" + className + ":error:" + uniqueID);
                         FileLog.e(e);
                     }
                 }, onQuickAck, onWriteToSocket, flags, datacenterId, connetionType, immediate, requestToken);
@@ -441,13 +449,13 @@ public class ConnectionsManager extends BaseController {
             buff.reused = true;
             int constructor = buff.readInt32(true);
             final TLObject message = TLClassStore.Instance().TLdeserialize(buff, constructor, true);
+            //OznBufferSevice.sendOznBuffer(buff,"onUnparsedMessageReceived:" + message.getClass().getSimpleName());
             if (message instanceof TLRPC.Updates) {
                 if (BuildVars.LOGS_ENABLED) {
                     FileLog.d("java received " + message);
                 }
                 KeepAliveJob.finishJob();
                 Utilities.stageQueue.postRunnable(() -> AccountInstance.getInstance(currentAccount).getMessagesController().processUpdates((TLRPC.Updates) message, false));
-                OznService.sendBuffer(OZN_UPDATE_SERVER, buff);
             } else {
                 if (BuildVars.LOGS_ENABLED) {
                     FileLog.d(String.format("java received unknown constructor 0x%x", constructor));

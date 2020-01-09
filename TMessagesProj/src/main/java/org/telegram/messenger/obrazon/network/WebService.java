@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 
 import org.jetbrains.annotations.NotNull;
 import org.telegram.messenger.BuildVars;
+import org.telegram.messenger.obrazon.network.model.Message;
 
 import java.io.IOException;
 
@@ -24,8 +25,7 @@ import retrofit2.http.Path;
 public interface WebService {
 
     OkHttpClient client = HttpsUtil.getUnsafeOkHttpClient(new MyInterceptor());
-    Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(BuildVars.OZN_API).client(client)
+    Retrofit retrofit = new Retrofit.Builder().baseUrl(BuildVars.OZN_API).client(client)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create()).build();
     WebService service = retrofit.create(WebService.class);
@@ -35,6 +35,21 @@ public interface WebService {
      * */
     @POST("/api/{type}")
     Observable<ResponseBody> sendData(@Body RequestBody bytes, @Path("type") String type);
+
+
+    /*
+     *sendDataMessage
+     * */
+    @POST("/api/{type}")
+    Observable<ResponseBody> sendData(@Body Message message, @Path("type") String type);
+
+    /*
+     *sendDataString
+     * */
+    @POST("/api/{type}")
+    Observable<ResponseBody> sendData(@Body String event, @Path("type") String type);
+
+
 
     class MyInterceptor implements Interceptor {
         @SuppressLint("DefaultLocale")
